@@ -9,18 +9,25 @@ import (
 
 func Supervise() {
 
-	foundIdx := -1
-	for i, arg := range os.Args {
+	args := []string{}
+
+	found := false
+	for _, arg := range os.Args {
 		if arg == "-reanimator-supervised" {
-			foundIdx = i
+			found = true
+			continue
 		}
+		args = append(args, arg)
 	}
 
-	if foundIdx < 0 {
+	// If the flag was found, it was stripped above so we can pass the remaining args to the program.
+	// If it wasn't found, add it and run the program supervised
+	if found {
+		os.Args = args
 		return
+	} else {
+		args = append(os.Args, "-reanimator-supervised")
 	}
-
-	args := append(os.Args[:foundIdx], os.Args[foundIdx+1:]...)
 
 	for {
 		fmt.Fprintf(os.Stderr, "reanimator supervisor - Starting process\n")
