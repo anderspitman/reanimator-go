@@ -1,4 +1,4 @@
-package symbiote
+package reanimator
 
 import (
 	"fmt"
@@ -9,27 +9,27 @@ import (
 
 func Supervise() {
 
-        foundIdx := -1
-        for i, arg := range os.Args {
-                if arg == "-symbiote-supervised" {
-                        foundIdx = i
-                }
-        }
+	foundIdx := -1
+	for i, arg := range os.Args {
+		if arg == "-reanimator-supervised" {
+			foundIdx = i
+		}
+	}
 
-        if foundIdx < 0 {
-                return
-        }
+	if foundIdx < 0 {
+		return
+	}
 
-        args := append(os.Args[:foundIdx], os.Args[foundIdx+1:]...)
+	args := append(os.Args[:foundIdx], os.Args[foundIdx+1:]...)
 
 	for {
-		fmt.Fprintf(os.Stderr, "symbiote supervisor - Starting process\n")
-                cmd := exec.Command(args[0], args[1:]...)
+		fmt.Fprintf(os.Stderr, "reanimator supervisor - Starting process\n")
+		cmd := exec.Command(args[0], args[1:]...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		err := cmd.Run()
-		fmt.Fprintf(os.Stderr, "symbiote supervisor - Process exited\n")
+		fmt.Fprintf(os.Stderr, "reanimator supervisor - Process exited\n")
 
 		if err == nil {
 			break
