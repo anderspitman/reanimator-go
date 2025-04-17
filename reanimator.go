@@ -30,16 +30,31 @@ func Supervise() {
 	}
 
 	for {
-		fmt.Fprintf(os.Stderr, "reanimator supervisor - Starting process\n")
+		fmt.Fprintf(os.Stderr, "\nreanimator supervisor - Starting process\n")
 		cmd := exec.Command(args[0], args[1:]...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		err := cmd.Run()
-		fmt.Fprintf(os.Stderr, "reanimator supervisor - Process exited\n")
+		fmt.Fprintf(os.Stderr, "\nreanimator supervisor - Process exited")
 
 		if err == nil {
+			fmt.Fprintf(os.Stderr, " with code 0. Exiting...\n")
 			break
+		} else if exitError, ok := err.(*exec.ExitError); ok {
+
+			code := exitError.ExitCode()
+
+			fmt.Fprintf(os.Stderr, " with code %d", code)
+
+			if code == 1 {
+				fmt.Fprintf(os.Stderr, ". Exiting...\n")
+				break
+			} else {
+				fmt.Fprintf(os.Stderr, ". Restarting...\n")
+			}
+		} else {
+			fmt.Println(err)
 		}
 
 		time.Sleep(3 * time.Second)
